@@ -23,6 +23,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
         
+        // Acionar a luz
+        sceneView.autoenablesDefaultLighting = true
         
     }
     
@@ -30,24 +32,21 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         super.viewWillAppear(animated)
         
         // Create a session configuration
-        //Aqui vc seta que vai trabalhar com reconhecimento de img:
+        // Aqui vc seta que vai trabalhar com reconhecimento de img:
         let configuration = ARImageTrackingConfiguration()
 
-        //Criar a referência para o seu .png
+        // Criar a referência para o seu .png
         if let imageToTrack = ARReferenceImage.referenceImages(inGroupNamed: "Pokemon Cards", bundle: Bundle.main) {
             
             configuration.trackingImages = imageToTrack
             
             configuration.maximumNumberOfTrackedImages = 1
             
-            print("IMAGEM ADD COM SUCESSO...")
+            print("IMGs Armazendos...")
         }else{
-            print("hhghjghgjhgjhghj")
+            print("erro....")
         }
-        
-        
-        
-        
+
         // Run the view's session
         sceneView.session.run(configuration)
     }
@@ -67,21 +66,44 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         if let imageAnchor = anchor as? ARImageAnchor{
             print("->IDENTIFICOU A IMG")
+            
             let plane = SCNPlane(
                 width: imageAnchor.referenceImage.physicalSize.width,
                 height: imageAnchor.referenceImage.physicalSize.height
             )
             
-            plane.firstMaterial?.diffuse.contents = UIColor(white: 1.0, alpha: 0.5)
+            plane.firstMaterial?.diffuse.contents = UIColor(white: 1.0, alpha: 0.8)
             
             let planeNode = SCNNode(geometry: plane)
             
             planeNode.eulerAngles.x = -Float.pi / 2
             
             node.addChildNode(planeNode)
+            
+            //Criar o node do objeto 3d
+            if let pokeScene = SCNScene(named: "art.scnassets/Vulpix/Vulpix.scn"){
+                
+                if let pokeNode = pokeScene.rootNode.childNodes.first {
+                    
+                    //Rotaciona o nó do pokemom (pois o node do lano "já está rotacionado também"...)
+                    pokeNode.eulerAngles.x = Float.pi / 1
+                    
+                    //Adiciona esse node criado com o objeto 3d, no node da cena
+                    planeNode.addChildNode(pokeNode)
+                    
+                }else{
+                    print("Não foi encontrado o primeiro node do objeto vilpix.scn")
+                }
+                
+            }else{
+                print("Não foi encontrado: vulpix.scn")
+            }
+            
         }
         
         return node
     }
     
 }
+
+// Biaxar pokemons 3D: 
