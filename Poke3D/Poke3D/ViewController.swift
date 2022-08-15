@@ -32,15 +32,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         super.viewWillAppear(animated)
         
         // Create a session configuration
-        // Aqui vc seta que vai trabalhar com reconhecimento de img:
-        let configuration = ARImageTrackingConfiguration()
+        let configuration = ARWorldTrackingConfiguration()
 
         // Criar a referência para o seu .png
         if let imageToTrack = ARReferenceImage.referenceImages(inGroupNamed: "Pokemon Cards", bundle: Bundle.main) {
             
-            configuration.trackingImages = imageToTrack
+            configuration.detectionImages = imageToTrack
             
-            configuration.maximumNumberOfTrackedImages = 1
+            //O valor máximo é 4.
+            configuration.maximumNumberOfTrackedImages = 2
             
             print("IMGs Armazendos...")
         }else{
@@ -60,12 +60,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
 
     // MARK: - ARSCNViewDelegate
     
+    // renderes vai ser chamado quando alguma img do AR Resource Group for detectada
     func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
         
         let node = SCNNode()
         
         if let imageAnchor = anchor as? ARImageAnchor{
-            print("->IDENTIFICOU A IMG")
+            
+            //Identificar a imagem
+            //print(imageAnchor.referenceImage.name)
             
             let plane = SCNPlane(
                 width: imageAnchor.referenceImage.physicalSize.width,
@@ -80,24 +83,51 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             
             node.addChildNode(planeNode)
             
-            //Criar o node do objeto 3d
-            if let pokeScene = SCNScene(named: "art.scnassets/Vulpix/Vulpix.scn"){
-                
-                if let pokeNode = pokeScene.rootNode.childNodes.first {
+            //VULPIX
+            if imageAnchor.referenceImage.name == "vulpix" {
+                //Criar o node do objeto 3d do vulpix
+                if let pokeScene = SCNScene(named: "art.scnassets/Vulpix/Vulpix.scn"){
                     
-                    //Rotaciona o nó do pokemom (pois o node do lano "já está rotacionado também"...)
-                    pokeNode.eulerAngles.x = Float.pi / 1
-                    
-                    //Adiciona esse node criado com o objeto 3d, no node da cena
-                    planeNode.addChildNode(pokeNode)
+                    if let pokeNode = pokeScene.rootNode.childNodes.first {
+                        
+                        //Rotaciona o nó do pokemom (pois o node do lano "já está rotacionado também"...)
+                        pokeNode.eulerAngles.x = Float.pi / 1
+                        
+                        //Adiciona esse node criado com o objeto 3d, no node da cena
+                        planeNode.addChildNode(pokeNode)
+                        
+                    }else{
+                        print("Não foi encontrado o primeiro node do objeto Vulpix.scn")
+                    }
                     
                 }else{
-                    print("Não foi encontrado o primeiro node do objeto vilpix.scn")
+                    print("Não foi encontrado o modelo 3d Vulpix.scn")
                 }
-                
-            }else{
-                print("Não foi encontrado: vulpix.scn")
             }
+            
+            //LAMPENT
+            if imageAnchor.referenceImage.name == "lampent" {
+                //Criar o node do objeto 3d do vulpix
+                if let pokeScene = SCNScene(named: "art.scnassets/Gengar/Gengar.scn"){
+                    
+                    if let pokeNode = pokeScene.rootNode.childNodes.first {
+                        
+                        //Rotaciona o nó do pokemom (pois o node do lano "já está rotacionado também"...)
+                        pokeNode.eulerAngles.x = Float.pi / 2
+                        
+                        //Adiciona esse node criado com o objeto 3d, no node da cena
+                        planeNode.addChildNode(pokeNode)
+                        
+                    }else{
+                        print("Não foi encontrado o primeiro node do objeto Gengar.scn")
+                    }
+                    
+                }else{
+                    print("Não foi encontrado o modelo 3d Gengar.scn")
+                }
+            }
+            
+            
             
         }
         
@@ -105,5 +135,3 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     }
     
 }
-
-// Biaxar pokemons 3D: 
