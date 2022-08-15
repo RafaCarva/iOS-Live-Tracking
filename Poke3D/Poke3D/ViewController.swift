@@ -40,7 +40,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             configuration.detectionImages = imageToTrack
             
             //O valor máximo é 4.
-            configuration.maximumNumberOfTrackedImages = 2
+            configuration.maximumNumberOfTrackedImages = 4
             
             print("IMGs Armazendos...")
         }else{
@@ -114,6 +114,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                         
                         //Rotaciona o nó do pokemom (pois o node do lano "já está rotacionado também"...)
                         pokeNode.eulerAngles.x = Float.pi / 2
+                        pokeNode.scale.x *= 0.8
+                        pokeNode.scale.y *= 0.8
+                        pokeNode.scale.z *= 0.8
                         
                         //Adiciona esse node criado com o objeto 3d, no node da cena
                         planeNode.addChildNode(pokeNode)
@@ -124,6 +127,56 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                     
                 }else{
                     print("Não foi encontrado o modelo 3d Gengar.scn")
+                }
+            }
+            
+            //Card URSO -> 3D ARCANINE
+            if imageAnchor.referenceImage.name == "urso" {
+                //Criar o node do objeto 3d do vulpix
+                if let pokeScene = SCNScene(named: "art.scnassets/Arcanine/Arcanine.scn"){
+                    
+                    if let pokeNode = pokeScene.rootNode.childNodes.first {
+                        
+                        //Rotaciona o nó do pokemom (pois o node do lano "já está rotacionado também"...)
+                        pokeNode.eulerAngles.x = Float.pi / 2
+                        pokeNode.scale.x *= 0.5
+                        pokeNode.scale.y *= 0.5
+                        pokeNode.scale.z *= 0.5
+                        
+                        //Adiciona esse node criado com o objeto 3d, no node da cena
+                        planeNode.addChildNode(pokeNode)
+                        
+                    }else{
+                        print("Não foi encontrado o primeiro node do objeto urso.scn")
+                    }
+                    
+                }else{
+                    print("Não foi encontrado o modelo 3d Arcanine.scn")
+                }
+            }
+            
+            //Card glisa -> 3D eevee
+            if imageAnchor.referenceImage.name == "glisa" {
+                //Criar o node do objeto 3d do eevee
+                if let pokeScene = SCNScene(named: "art.scnassets/Eevee/Eevee.scn"){
+                    
+                    if let pokeNode = pokeScene.rootNode.childNodes.first {
+                        
+                        //Rotaciona o nó do pokemom (pois o node do lano "já está rotacionado também"...)
+                        pokeNode.eulerAngles.x = Float.pi / 2
+                        //pokeNode.scale.x *= 0.5
+                        //pokeNode.scale.y *= 0.5
+                        //pokeNode.scale.z *= 0.5
+                        
+                        //Adiciona esse node criado com o objeto 3d, no node da cena
+                        planeNode.addChildNode(pokeNode)
+                        
+                    }else{
+                        print("Não foi encontrado o primeiro node do objeto glisa.scn")
+                    }
+                    
+                }else{
+                    print("Não foi encontrado o modelo 3d Eevee.scn")
                 }
             }
             
